@@ -35,7 +35,7 @@ const Layout = ({ user }) => {
 
   const sidebarLinks = [
     { path: '/', icon: 'bi-house', label: 'Home' },
-    { path: '/search', icon: 'bi-search', label: 'Search' },
+    { path: '/search', icon: 'bi-search', label: 'Search(Chat/User)' },
     { path: '/reels', icon: 'bi-film', label: 'Reels' },
     { path: '/create', icon: 'bi-plus-square', label: 'Create Post' },
     { path: '/create-reel', icon: 'bi-camera-video', label: 'Create Reel' },
