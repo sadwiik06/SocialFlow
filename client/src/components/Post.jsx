@@ -333,16 +333,16 @@ const Post = ({ post, onDelete, user }) => {
                 <ListGroup.Item key={comment._id} className="px-0 py-1">
                   <div className="d-flex align-items-start">
                     <Image
-                      src={
-                        comment?.user?.profilePicture
-                          ? comment.user.profilePicture.startsWith("http")
-                            ? comment.user.profilePicture
-                            : `http://localhost:3000/${comment.user.profilePicture.replace(
-                                /\\\\/g,
-                                "/"
-                              )}`
-                          : "/default-profile.png"
-                      }
+src={
+  comment?.user?.profilePicture
+    ? comment.user.profilePicture.startsWith("http")
+      ? comment.user.profilePicture
+      : `${import.meta.env.VITE_BASE_URL}/${comment.user.profilePicture.replace(
+          /\\\\/g,
+          "/"
+        )}`
+    : "/default-profile.png"
+}
                       roundedCircle
                       width={32}
                       height={32}

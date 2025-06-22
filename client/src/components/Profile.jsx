@@ -236,35 +236,35 @@ const Profile = () => {
                     const token = localStorage.getItem('token');
                     try {
                       if (isFollowing) {
-                        await axios.post(
-                          `http://localhost:3000/api/user/unfollow/${userId}`,
-                          {},
-                          {
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                            },
-                          }
-                        );
+await axios.post(
+  `${import.meta.env.VITE_BASE_URL}/api/user/unfollow/${userId}`,
+  {},
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
                       } else {
-                        await axios.post(
-                          `http://localhost:3000/api/user/follow/${userId}`,
-                          {},
-                          {
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                            },
-                          }
-                        );
+await axios.post(
+  `${import.meta.env.VITE_BASE_URL}/api/user/follow/${userId}`,
+  {},
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
                       }
                       // Refetch user profile to update followers and isFollowing state
-                      const userResponse = await axios.get(
-                        `http://localhost:3000/api/user/${userId}`,
-                        {
-                          headers: {
-                            Authorization: `Bearer ${token}`,
-                          },
-                        }
-                      );
+const userResponse = await axios.get(
+  `${import.meta.env.VITE_BASE_URL}/api/user/${userId}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
                       setUser(userResponse.data);
                       const currentUser = JSON.parse(localStorage.getItem('user'));
                       const following = userResponse.data.followers || [];

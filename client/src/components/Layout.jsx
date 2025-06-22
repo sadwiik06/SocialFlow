@@ -91,7 +91,7 @@ const Layout = ({ user }) => {
           <div className="sidebar-footer">
             <Nav.Link as={Link} to={`/profile/${user._id}`} className="d-flex align-items-center">
               <img
-                src={user.profilePicture && (user.profilePicture.startsWith('http') ? user.profilePicture : `http://localhost:3000/${user.profilePicture}`) || '/default-profile.png'}
+src={user.profilePicture && (user.profilePicture.startsWith('http') ? user.profilePicture : `${import.meta.env.VITE_BASE_URL}/${user.profilePicture}`) || '/default-profile.png'}
                 alt={user.username}
                 className="profile-pic-sm me-2"
               />

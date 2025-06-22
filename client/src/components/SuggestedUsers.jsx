@@ -14,11 +14,11 @@ const SuggestedUsers = () => {
     const fetchSuggestedUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:3000/api/user/suggested', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/suggested`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
         setUsers(response.data);
 
         // Initialize following state based on current user's following list
@@ -39,15 +39,15 @@ const SuggestedUsers = () => {
   const handleFollow = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(
-        `http://localhost:3000/api/user/follow/${userId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+await axios.post(
+  `${import.meta.env.VITE_BASE_URL}/api/user/follow/${userId}`,
+  {},
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
       setFollowing(prev => [...prev, userId]);
     } catch (err) {
       console.error('Error following user:', err);
@@ -74,10 +74,10 @@ const SuggestedUsers = () => {
                 className="suggested-user-link"
               >
                 <Image
-                  src={
-                    (user.profilePicture && (user.profilePicture.startsWith('http') ? user.profilePicture : `http://localhost:3000/${user.profilePicture}`)) 
-                    || '/default-profile.png'
-                  }
+src={
+  (user.profilePicture && (user.profilePicture.startsWith('http') ? user.profilePicture : `${import.meta.env.VITE_BASE_URL}/${user.profilePicture}`)) 
+  || '/default-profile.png'
+}
                   roundedCircle
                   className="suggested-user-avatar"
                 />
