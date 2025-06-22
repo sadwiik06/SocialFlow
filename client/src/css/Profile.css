@@ -1,0 +1,66 @@
+/* src/pages/Profile.css */
+.profile-container {
+  max-width: 935px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-header {
+  border: none;
+  background-color: transparent;
+}
+
+.profile-pic-container {
+  width: 150px;
+  height: 150px;
+}
+
+.profile-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid #dbdbdb;
+}
+
+.profile-pic-lg {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #dbdbdb;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.bio {
+  white-space: pre-line;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    padding: 20px;
+  }
+  
+  .profile-pic-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}

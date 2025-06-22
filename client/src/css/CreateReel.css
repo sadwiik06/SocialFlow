@@ -1,0 +1,191 @@
+/* CreateReel.css */
+.create-reel-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.create-reel-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+.create-reel-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #6e8efb, #a777e3);
+  border-radius: 2px;
+}
+
+.create-reel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+  color: #555;
+  font-size: 1rem;
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.form-group input[type="text"]:focus {
+  border-color: #a777e3;
+  box-shadow: 0 0 0 3px rgba(167, 119, 227, 0.2);
+  outline: none;
+}
+
+.form-group input[type="text"]::placeholder {
+  color: #aaa;
+}
+
+.form-group input[type="file"] {
+  width: 100%;
+  padding: 1.5rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: #a777e3;
+  background-color: rgba(167, 119, 227, 0.05);
+}
+
+.form-group input[type="file"]::file-selector-button {
+  display: none;
+}
+
+.form-group input[type="file"]::before {
+  content: 'Select or drag a video file';
+  display: block;
+  color: #666;
+  font-size: 1rem;
+}
+
+.form-group input[type="file"]:hover::before {
+  color: #a777e3;
+}
+
+button[type="submit"] {
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
+  margin-top: 1rem;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+}
+
+button[type="submit"]:disabled {
+  background: linear-gradient(135deg, #cccccc, #999999);
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #ff4757;
+  background-color: rgba(255, 71, 87, 0.1);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-top: -1rem;
+  border-left: 3px solid #ff4757;
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* File upload preview (you can enhance this with JS later) */
+.file-preview {
+  margin-top: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .create-reel-container {
+    padding: 1.5rem;
+    margin: 1rem;
+    border-radius: 15px;
+  }
+  
+  .create-reel-container h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Glow effect for container */
+.create-reel-container::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #6e8efb, #a777e3, #6e8efb);
+  z-index: -1;
+  border-radius: 22px;
+  opacity: 0.1;
+  animation: glow 6s linear infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

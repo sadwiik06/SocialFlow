@@ -1,0 +1,138 @@
+/* src/components/Layout.css */
+:root {
+  --sidebar-width: 244px;
+  --post-width: 470px;
+  --reel-width: 392.85px;
+  --reel-height: 698.4px;
+}
+
+/* Sidebar styles */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  border-right: 1px solid #dbdbdb;
+  padding: 20px 10px;
+  overflow-y: auto;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-header {
+  padding: 25px 12px 16px;
+}
+
+.socialflow-logo {
+  font-family: 'Billabong', cursive;
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0;
+ background: linear-gradient(45deg, #6e8efb, #a777e3, #6e8efb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sidebar .nav-link {
+  padding: 12px;
+  margin: 4px 0;
+  border-radius: 8px;
+  color: #262626;
+  font-weight: 500;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #f2f2f2;
+}
+
+.sidebar .nav-link.active {
+  font-weight: 600;
+}
+
+.sidebar .nav-link i {
+  font-size: 1.25rem;
+  width: 24px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.profile-pic-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Main content styles */
+.main-content {
+  margin-left: 500px;
+  padding: 20px;
+  max-width: calc(var(--post-width) + 500px);
+}
+
+/* Mobile styles */
+.mobile-nav {
+  background-color: white;
+  border-top: 1px solid #dbdbdb;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.mobile-nav .nav-link {
+  color: #262626;
+  padding: 8px;
+}
+
+.mobile-nav .nav-link.active {
+  color: #0095f6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0;
+    padding-bottom: 60px; /* Space for mobile nav */
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 10px;
+  }
+}
+/* Add to src/components/Layout.css */
+.badge {
+  font-size: 0.6rem;
+  padding: 0.25em 0.4em;
+}
+
+.mobile-nav .badge {
+  font-size: 0.5rem;
+  padding: 0.2em 0.35em;
+}
+
+.sidebar .nav-link.active {
+  font-weight: 600;
+}
+
+.sidebar .nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background-color: #262626;
+  border-radius: 3px;
+}
+/* Font face for Instagram logo */

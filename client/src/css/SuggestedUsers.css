@@ -1,0 +1,134 @@
+/* SuggestedUsers.css */
+.suggested-users-card {
+  border: none;
+  border-radius: 12px;
+  min-width: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.suggested-users-header {
+  background-color: transparent;
+  border-bottom: 1px solid #efefef;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.suggested-users-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.suggested-users-see-all {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0095f6;
+  padding: 0;
+  text-decoration: none;
+}
+
+.suggested-users-see-all:hover {
+  color: #00376b;
+  text-decoration: none;
+}
+
+.suggested-users-loading {
+  padding: 20px;
+  text-align: center;
+}
+
+.suggested-users-list {
+  padding: 8px 0;
+}
+
+.suggested-user-item {
+  border: none;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.suggested-user-link {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+.suggested-user-avatar {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  margin-right: 12px;
+  border: 1px solid #efefef;
+}
+
+.suggested-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.suggested-user-username {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.suggested-user-subtext {
+  font-size: 12px;
+  color: #8e8e8e;
+}
+
+.suggested-user-follow-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0095f6;
+  padding: 0;
+  text-decoration: none;
+  min-width: 60px;
+  text-align: right;
+}
+
+.suggested-user-follow-btn:hover {
+  color: #00376b;
+  text-decoration: none;
+}
+
+.suggested-user-follow-btn.following {
+  color: #262626;
+  font-weight: 400;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .suggested-users-card {
+    margin: 0 16px 20px;
+  }
+}
+.suggested-user-follow-btn {
+  color: white !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  min-width: 75px;
+  text-align: center;
+}
+
+.suggested-user-follow-btn.following {
+  background-color: #6c757d; /* secondary color */
+  border: none;
+}
+
+.suggested-user-follow-btn:not(.following) {
+  background-color: #007bff; /* primary color */
+  border: none;
+}
