@@ -178,7 +178,7 @@ export default function SocialFlowHomepage() {
                   content in the most beautiful social experience ever created.
                 </p>
                 <div className="hero-actions">
-                  <button className="btn-primary">Get Started Free</button>
+                  <button className="btn-primary" onClick={() => navigate("/register")}>Get Started Free</button>
                 </div>
               </div>
 
@@ -264,7 +264,7 @@ export default function SocialFlowHomepage() {
                 Join millions of users who are already sharing their stories and
                 connecting with friends on Social Flow.
               </p>
-              <button className="cta-button">Sign Up Now - It's Free!</button>
+              <button className="cta-button" onClick={() => navigate("/register")}>Sign Up Now - It's Free!</button>
             </div>
           </div>
         </section>
