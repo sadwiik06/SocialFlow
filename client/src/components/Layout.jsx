@@ -1,7 +1,7 @@
 // src/components/Layout.jsx
 import { useState, useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
-import { Container, Navbar, Nav, Offcanvas, Button } from 'react-bootstrap';
+import { Container, Navbar, Nav, Offcanvas, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { initSocket, disconnectSocket } from '../utils/socket';
 import '../css/Layout.css';
 
@@ -10,6 +10,7 @@ const Layout = ({ user }) => {
   const location = useLocation();
   const [showSidebar, setShowSidebar] = useState(false);
   const [activeLink, setActiveLink] = useState('');
+  const [showSearchHint, setShowSearchHint] = useState(false);
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -19,12 +20,22 @@ const Layout = ({ user }) => {
     if (user) {
       const token = localStorage.getItem('token');
       initSocket(token);
+
+      // Show search hint for first-time users
+      const hasSeenSearchHint = localStorage.getItem('hasSeenSearchHint');
+      if (!hasSeenSearchHint) {
+        setShowSearchHint(true);
+      }
     }
-    
   }, [user]);
 
   const handleCloseSidebar = () => setShowSidebar(false);
   const handleShowSidebar = () => setShowSidebar(true);
+
+  const handleDismissSearchHint = () => {
+    setShowSearchHint(false);
+    localStorage.setItem('hasSeenSearchHint', 'true');
+  };
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -51,16 +62,44 @@ const Layout = ({ user }) => {
       {/* Mobile Bottom Navbar */}
       <Navbar fixed="bottom" className="d-lg-none mobile-nav">
         <Nav className="w-100 justify-content-around">
-          {sidebarLinks.slice(0, 4).map((link) => (
-            <Nav.Link
-              key={link.path}
-              as={Link}
-              to={link.path}
-              className={activeLink === link.path ? 'active' : ''}
-            >
-              <i className={`bi ${link.icon} fs-4`}></i>
-            </Nav.Link>
-          ))}
+          {sidebarLinks.slice(0, 4).map((link) => {
+            if (link.path === '/search' && showSearchHint) {
+              return (
+                <OverlayTrigger
+                  key={link.path}
+                  placement="top"
+                  overlay={
+                    <Tooltip id="search-hint-tooltip">
+                      Click here to search and view profiles or chat!
+                      <div style={{ marginTop: '5px', textAlign: 'right' }}>
+                        <Button variant="light" size="sm" onClick={handleDismissSearchHint}>
+                          Got it
+                        </Button>
+                      </div>
+                    </Tooltip>
+                  }
+                >
+                  <Nav.Link
+                    as={Link}
+                    to={link.path}
+                    className={activeLink === link.path ? 'active' : ''}
+                  >
+                    <i className={`bi ${link.icon} fs-4`}></i>
+                  </Nav.Link>
+                </OverlayTrigger>
+              );
+            }
+            return (
+              <Nav.Link
+                key={link.path}
+                as={Link}
+                to={link.path}
+                className={activeLink === link.path ? 'active' : ''}
+              >
+                <i className={`bi ${link.icon} fs-4`}></i>
+              </Nav.Link>
+            );
+          })}
           <Button variant="link" onClick={handleShowSidebar}>
             <i className="bi-list fs-4"></i>
           </Button>
@@ -91,7 +130,7 @@ const Layout = ({ user }) => {
           <div className="sidebar-footer">
             <Nav.Link as={Link} to={`/profile/${user._id}`} className="d-flex align-items-center">
               <img
-src={user.profilePicture && (user.profilePicture.startsWith('http') ? user.profilePicture : `${import.meta.env.VITE_BASE_URL}/${user.profilePicture}`) || '/default-profile.png'}
+                src={user.profilePicture && (user.profilePicture.startsWith('http') ? user.profilePicture : `${import.meta.env.VITE_BASE_URL}/${user.profilePicture}`) || '/default-profile.png'}
                 alt={user.username}
                 className="profile-pic-sm me-2"
               />

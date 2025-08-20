@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { User, Mail, Lock, Eye, EyeOff, UserPlus, LogIn, Stars } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+
 const Register = () => {
+     const navigate = useNavigate();
+  
   const [userData, setUserData] = useState({
     username: '',
     email: '',
@@ -50,7 +54,7 @@ const Register = () => {
       const data = await response.json();
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.href = '/';
+      navigate("/");
     } catch (err) {
       setError('Registration failed. Please try again.');
     } finally {
@@ -269,7 +273,7 @@ const Register = () => {
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   borderRadius: '8px'
                 }}
-                onClick={() => { window.location.href = '/login'; }}
+                onClick={() => navigate("/login")}
               >
                 Sign In
               </button>

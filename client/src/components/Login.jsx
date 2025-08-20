@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { User, Mail, Lock, Eye, EyeOff, UserPlus, LogIn, Stars } from 'lucide-react';
-
+import { useNavigate } from "react-router-dom";
 // Login Component
 const Login = () => {
+   const navigate = useNavigate();
+
   const [credentials, setCredentials] = useState({
     emailOrUsername: '',
     password: '',
@@ -52,7 +54,7 @@ const Login = () => {
       const data = await response.json();
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.href = '/';
+      navigate("/");
     } catch (err) {
       setError('Login failed. Please try again.');
     } finally {
@@ -225,17 +227,17 @@ const Login = () => {
 
             <div className="text-center mt-4">
               <p className="text-white-50 mb-2">Don't have an account?</p>
-              <button 
-                className="btn text-white fw-semibold"
-                style={{ 
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '8px'
-                }}
-                onClick={() => { window.location.href = '/register'; }}
-              >
-                Create Account
-              </button>
+               <button 
+      className="btn text-white fw-semibold"
+      style={{ 
+        background: 'rgba(255, 255, 255, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        borderRadius: '8px'
+      }}
+      onClick={() => navigate("/register")}
+    >
+      Create Account
+    </button>
             </div>
           </div>
         </div>
