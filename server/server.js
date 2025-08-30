@@ -108,6 +108,19 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
+app.get("/health", async (req, res) => {
+  try {
+   
+    const dbState = mongoose.connection.readyState; 
+    if (dbState === 1) {
+      res.status(200).json({ status: "OK", message: "Server and DB are running" });
+    } else {
+      res.status(500).json({ status: "ERROR", message: "DB not connected" });
+    }
+  } catch (err) {
+    res.status(500).json({ status: "ERROR", message: "Health check failed", error: err });
+  }
+});
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
