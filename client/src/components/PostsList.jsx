@@ -28,7 +28,7 @@ const PostsList = ({ user }) => {
     });
   }, []);
 
-const handlePostCommented = useCallback(({ postId, comment }) => {
+  const handlePostCommented = useCallback(({ postId, comment }) => {
     setPosts(prevPosts =>
       prevPosts.map(post => {
         if (post._id === postId) {
@@ -63,21 +63,21 @@ const handlePostCommented = useCallback(({ postId, comment }) => {
           },
         });
 
-const deduplicatePosts = (postsArray) => {
-  const seen = new Set();
-  return postsArray.filter(post => {
-    if (seen.has(post._id)) {
-      return false;
-    }
-    seen.add(post._id);
-    return true;
-  });
-};
+        const deduplicatePosts = (postsArray) => {
+          const seen = new Set();
+          return postsArray.filter(post => {
+            if (seen.has(post._id)) {
+              return false;
+            }
+            seen.add(post._id);
+            return true;
+          });
+        };
 
-setPosts(prev => {
-  const combined = page === 1 ? response.data : [...prev, ...response.data];
-  return deduplicatePosts(combined);
-});
+        setPosts(prev => {
+          const combined = page === 1 ? response.data : [...prev, ...response.data];
+          return deduplicatePosts(combined);
+        });
         setHasMore(response.data.length > 0);
 
         if (page === 1) {
@@ -109,7 +109,7 @@ setPosts(prev => {
           socket.off('postCommented', handlePostCommented);
           socket.off('postCreated', handlePostCreated);
           socket.off('postDeleted', handlePostDeleted);
-         
+
         }
       } catch {
         // Socket not initialized, ignore
@@ -177,28 +177,29 @@ setPosts(prev => {
   }
 
   return (
-    <Container className="mb-5" >
-      <Row>
-        <Col md={8}>
-          {posts.map(post => (
-            <Post key={post._id} post={post} user={user} onDelete={handleDelete} />
-          ))}
-          {loading && page > 1 && (
-            <div className="text-center my-3">
-              <Spinner animation="border" size="sm" />
-            </div>
-          )}
-          {!hasMore && posts.length > 0 && (
-            <div className="text-center text-muted my-3">
-              You've reached the end
-            </div>
-          )}
-        </Col>
-        <Col md={4}>
+    <div className="home-content-flex">
+      <div className="posts-feed-column">
+        {posts.map(post => (
+          <Post key={post._id} post={post} user={user} onDelete={handleDelete} />
+        ))}
+        {loading && page > 1 && (
+          <div className="text-center my-3">
+            <Spinner animation="border" size="sm" />
+          </div>
+        )}
+        {!hasMore && posts.length > 0 && (
+          <div className="text-center text-muted my-3">
+            You've reached the end
+          </div>
+        )}
+      </div>
+
+      <div className="suggested-column d-none d-xl-block">
+        <div className="suggested-sticky-container">
           <SuggestedUsers />
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 

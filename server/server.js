@@ -17,10 +17,22 @@ require("dotenv").config();
 
 const app = express();
 
+const allowedOrigins = [
+  "https://thesocialflow.onrender.com",
+  "http://localhost:5173"
+];
+
 const corsOptions = {
-  origin: "https://thesocialflow.onrender.com",
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
@@ -50,11 +62,18 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://thesocialflow.onrender.com",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
+
 
 // Socket.IO events
 io.on("connection", (socket) => {
@@ -110,8 +129,8 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 3000;
 app.get("/health", async (req, res) => {
   try {
-   
-    const dbState = mongoose.connection.readyState; 
+
+    const dbState = mongoose.connection.readyState;
     if (dbState === 1) {
       res.status(200).json({ status: "OK", message: "Server and DB are running" });
     } else {

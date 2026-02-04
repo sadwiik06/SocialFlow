@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { initSocket } from '../utils/socket';
 import '../css/Reel.css';
 
-const Reel = ({ reel: propReel, onDelete, user }) => {
+const Reel = ({ reel: propReel, onDelete, user, isActive }) => {
   const { id } = useParams();
   const videoRef = useRef(null);
   const [reel, setReel] = useState(propReel || null);
@@ -20,7 +20,6 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [lastTap, setLastTap] = useState(0);
 
   useEffect(() => {
     if (!propReel && id) {
@@ -84,9 +83,21 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
       socket.off('reelLiked');
       socket.off('reelCommented');
       socket.off('reelDeleted');
-     
     };
   }, [reel, isLiked, user?._id, onDelete]);
+
+  // Handle Play/Pause based on isActive prop
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isActive) {
+      video.play().then(() => setIsPlaying(true)).catch(e => console.log("Play error:", e));
+    } else {
+      video.pause();
+      setIsPlaying(false);
+    }
+  }, [isActive]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -95,29 +106,13 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
     const updateTime = () => setCurrentTime(video.currentTime);
     const updateDuration = () => setDuration(video.duration);
     const handleEnded = () => {
-      setIsPlaying(false);
       video.currentTime = 0;
+      video.play();
     };
 
     video.addEventListener('timeupdate', updateTime);
     video.addEventListener('loadedmetadata', updateDuration);
     video.addEventListener('ended', handleEnded);
-
-    // Auto play when component mounts
-    const playVideo = async () => {
-      try {
-        await video.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.log('Autoplay failed:', error);
-      }
-    };
-
-    if (video.readyState >= 2) { // HAVE_CURRENT_DATA
-      playVideo();
-    } else {
-      video.addEventListener('loadeddata', playVideo, { once: true });
-    }
 
     return () => {
       video.removeEventListener('timeupdate', updateTime);
@@ -127,51 +122,37 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
   }, [reel]);
 
   const lastTapRef = useRef(0);
-  const isPlayingRef = useRef(isPlaying);
-
-  useEffect(() => {
-    isPlayingRef.current = isPlaying;
-  }, [isPlaying]);
-
-  // Remove unused lastTap and setLastTap to fix eslint errors
 
   const handleVideoClick = () => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
 
     if (lastTapRef.current && (now - lastTapRef.current) < DOUBLE_PRESS_DELAY) {
-      // Double tap - like the video
       handleLike();
       lastTapRef.current = 0;
     } else {
-      // Single tap - toggle play/pause
       lastTapRef.current = now;
       setTimeout(() => {
         if (lastTapRef.current === now) {
-          togglePlay();
+          const video = videoRef.current;
+          if (video) {
+            if (video.paused) {
+              video.play();
+              setIsPlaying(true);
+            } else {
+              video.pause();
+              setIsPlaying(false);
+            }
+          }
           lastTapRef.current = 0;
         }
       }, DOUBLE_PRESS_DELAY);
     }
   };
 
-  const togglePlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isPlayingRef.current) {
-      video.pause();
-      setIsPlaying(false);
-    } else {
-      video.play();
-      setIsPlaying(true);
-    }
-  };
-
   const toggleMute = () => {
     const video = videoRef.current;
     if (!video) return;
-
     video.muted = !video.muted;
     setIsMuted(video.muted);
   };
@@ -258,7 +239,7 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
 
           {/* Progress Bar */}
           <div className="progress-bar">
-            <div 
+            <div
               className="progress-fill"
               style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
             />
@@ -274,7 +255,7 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
           {/* Bottom Info */}
           <div className="bottom-info">
             <div className="user-info">
-              <img 
+              <img
                 src={reel.postedBy.profilePicture && (reel.postedBy.profilePicture.startsWith('http') ? reel.postedBy.profilePicture : `${import.meta.env.VITE_BASE_URL}/${reel.postedBy.profilePicture}`) || '/default-profile.png'}
                 alt={reel.postedBy.username}
                 className="bottom-profile-pic"
@@ -290,12 +271,12 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
         {/* Side Actions - Outside the video */}
         <div className="side-actions">
           <div className="action-btn-container">
-            <button 
+            <button
               className={`action-btn ${isLiked ? 'liked' : ''}`}
               onClick={handleLike}
             >
-              <Heart 
-                size={28} 
+              <Heart
+                size={28}
                 fill={isLiked ? '#ff3040' : 'none'}
                 color={isLiked ? '#ff3040' : '#262626'}
               />
@@ -304,20 +285,20 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
           </div>
 
           <div className="action-btn-container">
-          <button 
-            className="action-btn"
-            onClick={() => setShowComments(!showComments)}
-            title={showComments ? "Hide comments" : "Show comments"}
-          >
-            <MessageCircle size={28} color="#262626" />
-          </button>
-          <span className="action-count">{comments.length}</span>
+            <button
+              className="action-btn"
+              onClick={() => setShowComments(!showComments)}
+              title={showComments ? "Hide comments" : "Show comments"}
+            >
+              <MessageCircle size={28} color="#262626" />
+            </button>
+            <span className="action-count">{comments.length}</span>
           </div>
 
           <div className="action-btn-container">
-          <button className="action-btn" onClick={handleShare} title="Copy reel link">
-            <Send size={28} color="#262626" />
-          </button>
+            <button className="action-btn" onClick={handleShare} title="Copy reel link">
+              <Send size={28} color="#262626" />
+            </button>
           </div>
         </div>
       </div>
@@ -327,22 +308,22 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
         <div className="comments-modal">
           <div className="comments-header">
             <h3>Comments</h3>
-            <button 
+            <button
               className="close-btn"
               onClick={() => setShowComments(false)}
             >
               ×
             </button>
           </div>
-          
+
           <div className="comments-list">
             {comments.map((comment, index) => (
               <div key={index} className="comment-item">
-                  <img 
-                    src={comment.user.profilePicture && (comment.user.profilePicture.startsWith('http') ? comment.user.profilePicture : `${import.meta.env.VITE_BASE_URL}/${comment.user.profilePicture}`) || '/default-profile.png'}
-                    alt={comment.user.username}
-                    className="comment-profile-pic"
-                  />
+                <img
+                  src={comment.user.profilePicture && (comment.user.profilePicture.startsWith('http') ? comment.user.profilePicture : `${import.meta.env.VITE_BASE_URL}/${comment.user.profilePicture}`) || '/default-profile.png'}
+                  alt={comment.user.username}
+                  className="comment-profile-pic"
+                />
                 <div className="comment-content">
                   <span className="comment-username">{comment.user.username}</span>
                   <span className="comment-text">{comment.text}</span>
@@ -360,8 +341,8 @@ const Reel = ({ reel: propReel, onDelete, user }) => {
               className="comment-input"
               onKeyPress={(e) => e.key === 'Enter' && handleComment(e)}
             />
-            <button 
-              onClick={handleComment} 
+            <button
+              onClick={handleComment}
               className="comment-submit"
               disabled={!newComment.trim() || loading}
             >

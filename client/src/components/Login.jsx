@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { User, Mail, Lock, Eye, EyeOff, UserPlus, LogIn, Stars } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Lock, Eye, EyeOff, LogIn, ChevronLeft } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
-// Login Component
-const Login = () => {
-   const navigate = useNavigate();
 
+const Login = () => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     emailOrUsername: '',
     password: '',
@@ -13,19 +11,6 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100,
-      });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   const handleChange = (e) => {
     setCredentials({
@@ -38,245 +23,284 @@ const Login = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
+
     try {
-      // Replace with actual API call
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
       });
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.msg || 'Login failed');
+      }
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate("/");
     } catch (err) {
-      setError('Login failed. Please try again.');
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-vh-100 position-relative overflow-hidden" style={{
-      background: `
-        radial-gradient(ellipse at ${mousePosition.x}% ${mousePosition.y}%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 20% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e1b4b 75%, #0f172a 100%)
-      `
-    }}>
-      {/* Animated Stars */}
-      <div className="position-absolute w-100 h-100">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="position-absolute rounded-circle bg-white"
-            style={{
-              width: Math.random() * 3 + 1 + 'px',
-              height: Math.random() * 3 + 1 + 'px',
-              left: Math.random() * 100 + '%',
-              top: Math.random() * 100 + '%',
-              opacity: Math.random() * 0.8 + 0.2,
-              animation: `twinkle ${Math.random() * 4 + 2}s ease-in-out infinite alternate`
-            }}
-          />
-        ))}
-      </div>
+    <div className="artisan-auth-wrapper">
+      <div className="dot-canvas"></div>
 
-      {/* Mountain Silhouette */}
-      <div className="position-absolute bottom-0 w-100" style={{
-        height: '40%',
-        background: `
-          linear-gradient(to right, 
-            rgba(15, 23, 42, 0.9) 0%, 
-            rgba(30, 41, 59, 0.8) 25%, 
-            rgba(15, 23, 42, 0.9) 50%,
-            rgba(30, 27, 75, 0.8) 75%,
-            rgba(15, 23, 42, 0.9) 100%
-          )
-        `,
-        clipPath: 'polygon(0 100%, 0 60%, 10% 50%, 20% 70%, 30% 40%, 40% 60%, 50% 30%, 60% 50%, 70% 35%, 80% 55%, 90% 45%, 100% 65%, 100% 100%)'
-      }} />
+      <button className="back-btn" onClick={() => navigate("/")}>
+        <ChevronLeft size={20} /> Back
+      </button>
 
-      {/* Shooting Stars */}
-      <div className="position-absolute" style={{
-        top: '20%',
-        left: '10%',
-        width: '100px',
-        height: '2px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)',
-        animation: 'shootingStar 3s ease-in-out infinite',
-        animationDelay: '1s'
-      }} />
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <span className="auth-label">WELCOME BACK</span>
+            <h2 className="auth-title">Log <span className="italic-serif">In</span></h2>
+            <p className="auth-subtitle">Continue your flow.</p>
+          </div>
 
-      <div className="position-absolute" style={{
-        top: '40%',
-        right: '20%',
-        width: '80px',
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.6), transparent)',
-        animation: 'shootingStar 4s ease-in-out infinite',
-        animationDelay: '3s'
-      }} />
+          {error && <div className="auth-error">{error}</div>}
 
-      {/* Login Form */}
-      <div className="container d-flex align-items-center justify-content-center min-vh-100 position-relative" style={{ zIndex: 10 }}>
-        <div className="col-md-6 col-lg-4">
-          <div className="p-5 rounded-4 position-relative" style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
-          }}>
-            {/* Cosmic glow effect */}
-            <div className="position-absolute top-0 start-0 w-100 h-100 rounded-4" style={{
-              background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(59, 130, 246, 0.1))',
-              zIndex: -1
-            }} />
-
-            <div className="text-center mb-4">
-              <div className="d-inline-flex align-items-center justify-content-center mb-3" style={{
-                width: '60px',
-                height: '60px',
-                background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
-                borderRadius: '50%'
-              }}>
-                <Stars className="text-white" size={24} />
-              </div>
-              <h2 className="fw-bold text-white mb-2">Welcome Back</h2>
-              <p className="text-white-50">Sign in to your cosmic journey</p>
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="input-group-minimal">
+              <Mail className="input-icon" size={18} />
+              <input
+                type="text"
+                placeholder="Email or Username"
+                name="emailOrUsername"
+                value={credentials.emailOrUsername}
+                onChange={handleChange}
+                required
+              />
             </div>
-            
-            {error && (
-              <div className="alert alert-danger bg-danger bg-opacity-10 border-danger text-danger">
-                {error}
-              </div>
-            )}
-            
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3 position-relative">
-                <div className="position-absolute top-50 start-0 translate-middle-y ms-3" style={{ zIndex: 5 }}>
-                  <User className="text-white-50" size={20} />
-                </div>
-                <input
-                  type="text"
-                  className="form-control ps-5 py-3"
-                  placeholder="Email or Username"
-                  name="emailOrUsername"
-                  value={credentials.emailOrUsername}
-                  onChange={handleChange}
-                  required
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: 'white',
-                    borderRadius: '12px'
-                  }}
-                />
-              </div>
 
-              <div className="mb-4 position-relative">
-                <div className="position-absolute top-50 start-0 translate-middle-y ms-3" style={{ zIndex: 5 }}>
-                  <Lock className="text-white-50" size={20} />
-                </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  className="form-control ps-5 pe-5 py-3"
-                  placeholder="Password"
-                  name="password"
-                  value={credentials.password}
-                  onChange={handleChange}
-                  required
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: 'white',
-                    borderRadius: '12px'
-                  }}
-                />
-                <button
-                  type="button"
-                  className="btn position-absolute top-50 end-0 translate-middle-y me-3"
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{ zIndex: 5, border: 'none', background: 'transparent' }}
-                >
-                  {showPassword ? <EyeOff className="text-white-50" size={20} /> : <Eye className="text-white-50" size={20} />}
-                </button>
-              </div>
-
-              <button 
-                type="submit" 
-                className="btn w-100 py-3 fw-semibold text-white rounded-3 d-flex align-items-center justify-content-center gap-2"
-                disabled={loading}
-                style={{
-                  background: loading ? 'rgba(139, 92, 246, 0.6)' : 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
-                  border: 'none',
-                  transition: 'all 0.3s ease'
-                }}
+            <div className="input-group-minimal">
+              <Lock className="input-icon" size={18} />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                name="password"
+                value={credentials.password}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                className="eye-toggle"
+                onClick={() => setShowPassword(!showPassword)}
               >
-                <LogIn size={20} />
-                {loading ? 'Signing In...' : 'Sign In'}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-            </form>
-
-            <div className="text-center mt-4">
-              <p className="text-white-50 mb-2">Don't have an account?</p>
-               <button 
-      className="btn text-white fw-semibold"
-      style={{ 
-        background: 'rgba(255, 255, 255, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '8px'
-      }}
-      onClick={() => navigate("/register")}
-    >
-      Create Account
-    </button>
             </div>
+
+            <button
+              type="submit"
+              className="btn-auth-submit"
+              disabled={loading}
+            >
+              {loading ? 'Authenticating...' : 'Sign In'} <LogIn size={18} />
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            <p>New here?</p>
+            <button className="auth-link-btn" onClick={() => navigate("/register")}>
+              Create an account
+            </button>
           </div>
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes twinkle {
-          0% { opacity: 0.2; transform: scale(1); }
-          100% { opacity: 1; transform: scale(1.2); }
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Italiana&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+          --bg: #ffffff;
+          --text: #000000;
+          --text-muted: #888888;
+          --accent: #007aff;
+          --error: #ff4d4d;
+          --font: 'Plus Jakarta Sans', sans-serif;
+          --font-serif: 'Italiana', serif;
         }
-        
-        @keyframes shootingStar {
-          0% { 
-            opacity: 0; 
-            transform: translateX(-100px) translateY(0px); 
-          }
-          10% { 
-            opacity: 1; 
-          }
-          90% { 
-            opacity: 1; 
-          }
-          100% { 
-            opacity: 0; 
-            transform: translateX(300px) translateY(-50px); 
-          }
+
+        .artisan-auth-wrapper {
+          min-height: 100vh;
+          background-color: var(--bg);
+          color: var(--text);
+          font-family: var(--font);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
         }
-        
-        input::placeholder {
-          color: rgba(255, 255, 255, 0.5) !important;
+
+        .dot-canvas {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background-image: radial-gradient(#efefef 1px, transparent 1px);
+          background-size: 40px 40px;
+          z-index: 0;
         }
-        
-        input:focus {
-          background: rgba(255, 255, 255, 0.15) !important;
-          border-color: rgba(139, 92, 246, 0.5) !important;
-          box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25) !important;
+
+        .back-btn {
+          position: absolute;
+          top: 40px; left: 40px;
+          background: none; border: none;
+          display: flex; align-items: center; gap: 8px;
+          font-weight: 700; font-size: 14px; color: var(--text-muted);
+          cursor: pointer; z-index: 10;
+          transition: color 0.2s;
+        }
+        .back-btn:hover { color: var(--text); }
+
+        .auth-container {
+          width: 100%;
+          max-width: 420px;
+          padding: 20px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .auth-card {
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(24px);
+          padding: 48px;
+          border-radius: 32px;
+          box-shadow: 0 40px 100px rgba(0,0,0,0.05);
+          border: 1px solid rgba(255, 255, 255, 0.4);
+          animation: fluidReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .auth-header { text-align: center; margin-bottom: 48px; }
+        .auth-label { 
+          font-size: 11px; 
+          font-weight: 800; 
+          letter-spacing: 0.4em; 
+          color: var(--accent); 
+          margin-bottom: 20px; 
+          display: block; 
+          text-transform: uppercase;
+          opacity: 0.8;
+        }
+        .auth-title { 
+          font-size: clamp(48px, 10vw, 64px); 
+          font-weight: 800; 
+          letter-spacing: -0.05em; 
+          margin-bottom: 16px; 
+          line-height: 0.9; 
+        }
+        .italic-serif { 
+          font-family: var(--font-serif); 
+          font-weight: 400; 
+          font-style: italic; 
+          color: var(--text-muted); 
+          padding: 0 4px; 
+          opacity: 0.85;
+        }
+        .auth-subtitle { font-size: 15px; color: var(--text-muted); font-weight: 400; letter-spacing: -0.01em; }
+
+        .auth-error {
+          background: rgba(255, 77, 77, 0.05);
+          color: var(--error);
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 24px;
+          border: 1px solid rgba(255, 77, 77, 0.1);
+          text-align: center;
+        }
+
+        .auth-form { display: flex; flex-direction: column; gap: 20px; }
+
+        .input-group-minimal {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .input-icon {
+          position: absolute;
+          left: 16px;
+          color: #ccc;
+        }
+
+        .input-group-minimal input {
+          width: 100%;
+          padding: 16px 16px 16px 48px;
+          border: 1px solid #eee;
+          border-radius: 12px;
+          font-size: 15px;
+          font-weight: 500;
+          transition: all 0.2s;
+          background: #fafafa;
+        }
+
+        .input-group-minimal input:focus {
+          outline: none;
+          background: white;
+          border-color: var(--accent);
+          box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.05);
+        }
+
+        .eye-toggle {
+          position: absolute;
+          right: 16px;
+          background: none; border: none;
+          color: #ccc; cursor: pointer;
+        }
+
+        .btn-auth-submit {
+          background: var(--text);
+          color: white;
+          border: none;
+          padding: 18px;
+          border-radius: 12px;
+          font-weight: 800;
+          font-size: 16px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          transition: all 0.3s;
+          margin-top: 10px;
+        }
+
+        .btn-auth-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .auth-footer {
+          margin-top: 40px;
+          text-align: center;
+          font-size: 14px;
+          color: var(--text-muted);
+        }
+
+        .auth-link-btn {
+          background: none; border: none;
+          color: var(--text);
+          font-weight: 800;
+          cursor: pointer;
+          margin-top: 5px;
+          text-decoration: underline;
+        }
+
+        @keyframes fluidReveal {
+          from { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(10px); }
+          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @media (max-width: 480px) {
+          .auth-card { padding: 30px 20px; }
+          .auth-title { font-size: 36px; }
         }
       `}</style>
     </div>
   );
 };
+
 export default Login;

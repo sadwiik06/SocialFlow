@@ -1,20 +1,19 @@
 // src/pages/CreatePost.jsx
 import { useState, useRef } from 'react';
-import { Button, Form, Modal, Image, Spinner, Alert } from 'react-bootstrap';
+import { Button, Form, Image, Spinner, Alert, Card } from 'react-bootstrap';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { getSocket } from '../utils/socket';
 import '../css/CreatePost.css';
 
 const CreatePost = () => {
-  const [show, setShow] = useState(true);
   const [caption, setCaption] = useState('');
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
-
-  const handleClose = () => setShow(false);
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -31,7 +30,7 @@ const CreatePost = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       const formData = new FormData();
       formData.append('caption', caption);
       formData.append('imageUrl', image);
@@ -59,7 +58,9 @@ const CreatePost = () => {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-      handleClose();
+
+      // Navigate to home to see the new post
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Error creating post');
     } finally {
@@ -68,22 +69,46 @@ const CreatePost = () => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>Create New Post</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
-        
-        <div className="create-post-container">
-          {preview ? (
-            <div className="image-preview-container">
-              <Image src={preview} alt="Preview" className="image-preview" />
-            </div>
-          ) : (
-            <div className="upload-area" onClick={() => fileInputRef.current.click()}>
-              <i className="bi bi-images fs-1"></i>
-              <p>Drag photos and videos here or click to select</p>
+    <div className="create-post-page">
+      <Card className="create-post-card shadow-sm">
+        <Card.Header className="bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h2 className="mb-0 fs-5 fw-bold">Create New Post</h2>
+          {preview && (
+            <Button
+              variant="link"
+              className="text-primary text-decoration-none fw-bold p-0"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? <Spinner animation="border" size="sm" /> : 'Share'}
+            </Button>
+          )}
+        </Card.Header>
+        <Card.Body className="p-0">
+          {error && <Alert variant="danger" className="m-3">{error}</Alert>}
+
+          <div className="create-post-layout">
+            <div className="media-section">
+              {preview ? (
+                <div className="image-preview-container">
+                  <Image src={preview} alt="Preview" className="image-preview" />
+                  <Button
+                    variant="dark"
+                    size="sm"
+                    className="change-media-btn"
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    Change Image
+                  </Button>
+                </div>
+              ) : (
+                <div className="upload-placeholder" onClick={() => fileInputRef.current.click()}>
+                  <div className="dotted-circle-plus">
+                    <span className="plus-icon">+</span>
+                  </div>
+                  <span className="upload-text">Select from device</span>
+                </div>
+              )}
               <Form.Control
                 type="file"
                 ref={fileInputRef}
@@ -92,31 +117,35 @@ const CreatePost = () => {
                 className="d-none"
               />
             </div>
-          )}
-          
-          <Form onSubmit={handleSubmit} className="caption-form">
-            <Form.Group className="mb-3">
-              <Form.Control
-                as="textarea"
-                rows={5}
-                placeholder="Write a caption..."
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-              />
-            </Form.Group>
-            
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={!image || loading}
-              className="w-100"
-            >
-              {loading ? <Spinner size="sm" /> : 'Share'}
-            </Button>
-          </Form>
-        </div>
-      </Modal.Body>
-    </Modal>
+
+            <div className="details-section">
+              <Form onSubmit={handleSubmit} className="h-100 d-flex flex-column">
+                <div className="caption-box-container">
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Write a caption..."
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    className="caption-textarea shadow-none"
+                  />
+                </div>
+
+                <div className="p-3 border-top d-lg-none">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={!image || loading}
+                    className="w-100 fw-bold rounded-pill"
+                  >
+                    {loading ? <Spinner size="sm" /> : 'Share Post'}
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
   );
 };
 

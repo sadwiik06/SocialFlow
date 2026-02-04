@@ -1,6 +1,7 @@
 /* Search Component Styles */
 .search-container {
   max-width: 600px;
+  min-width: 600px;
   margin: 20px auto;
   padding: 20px;
   background-color: #fff;

@@ -1,67 +1,154 @@
 /* src/pages/CreatePost.css */
-.create-post-container {
+.create-post-page {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px);
+  padding: 40px 20px;
+  background: #ffffff;
 }
 
-.upload-area {
+.create-post-card {
+  width: 100%;
+  max-width: 940px;
+  min-width: 940px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #dbdbdb;
+  background: white;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  /* More defined shadow */
+}
+
+.create-post-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.media-section {
+  background: #ffffff;
+  flex: 1.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 450px;
+  position: relative;
+  border-right: 1px solid #efefef;
+}
+
+/* Round Dotted Circle UI */
+.upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 400px;
-  border: 2px dashed #dbdbdb;
-  border-radius: 8px;
+  gap: 20px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.upload-placeholder:hover {
+  transform: scale(1.02);
+}
+
+.dotted-circle-plus {
+  width: 96px;
+  height: 96px;
+  border: 2px dashed #dbdbdb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #262626;
+  position: relative;
   transition: all 0.3s ease;
 }
 
-.upload-area:hover {
+.upload-placeholder:hover .dotted-circle-plus {
   border-color: #0095f6;
+  background: rgba(0, 149, 246, 0.02);
 }
 
-.upload-area i {
-  color: #0095f6;
-  margin-bottom: 10px;
+.plus-icon {
+  font-size: 42px;
+  font-weight: 300;
+  line-height: 1;
 }
 
-.upload-area p {
-  color: #8e8e8e;
-  font-size: 0.9rem;
+.upload-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #262626;
 }
 
 .image-preview-container {
-  height: 400px;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #000;
+  position: relative;
 }
 
 .image-preview {
-  max-height: 100%;
   max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
-.caption-form {
-  margin-top: 20px;
+.change-media-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7) !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  z-index: 10;
+}
+
+/* Light Message Box for details */
+.details-section {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.caption-box-container {
+  padding: 20px;
+  flex: 1;
+}
+
+.caption-textarea {
+  resize: none !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  border: 1px solid #efefef !important;
+  background: #fafafa !important;
+  /* Light message box feel */
+  border-radius: 12px !important;
+  padding: 16px !important;
+  height: 200px !important;
+  transition: all 0.2s ease !important;
+}
+
+.caption-textarea:focus {
+  background: #fff !important;
+  border-color: #dbdbdb !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
 }
 
 @media (min-width: 992px) {
-  .create-post-container {
+  .create-post-layout {
     flex-direction: row;
+    height: 600px;
   }
-  
-  .upload-area,
-  .image-preview-container {
-    width: 60%;
-    height: 500px;
-  }
-  
-  .caption-form {
-    width: 40%;
-    padding-left: 20px;
-    margin-top: 0;
+
+  .details-section {
+    max-width: 380px;
   }
 }
