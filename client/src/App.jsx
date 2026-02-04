@@ -1,5 +1,4 @@
 import './App.css'
-import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './components/Login'
 import Register from './components/Register'
@@ -11,23 +10,21 @@ import Layout from './components/Layout'
 import Profile from './components/Profile'
 import CreatePost from './components/CreatePost';
 import InstagramReelsFeed from './components/InstagramReelsFeed';
-import Post from './components/Post';
 import PostsList from './components/PostsList';
 import PostDetail from './components/PostDetail';
-
 import CreateReel from './components/CreateReel';
 
 import { SocketProvider } from './context/SocketContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-function App() {
-  const [user, setUser] = useState(null);
+function AppContent() {
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
-  }, []);
+  if (loading) {
+    return <div className="loading-screen">Loading SocialFlow...</div>;
+  }
 
-  if (user === null) {
+  if (!user) {
     // User not logged in, render public routes including Home at "/"
     return (
       <BrowserRouter>
@@ -35,14 +32,17 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </BrowserRouter>
     );
   }
 
   // User logged in, render protected routes
+  const token = localStorage.getItem('token'); // Get token for socket provider
+
   return (
-    <SocketProvider token={user.token}>
+    <SocketProvider token={token}>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -65,7 +65,15 @@ function App() {
         </Routes>
       </BrowserRouter>
     </SocketProvider>
-  )
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
 
 export default App

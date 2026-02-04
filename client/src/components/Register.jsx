@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { User, Mail, Lock, Eye, EyeOff, UserPlus, ChevronLeft } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login, user } = useAuth();
+
+  // If already logged in, go to home
+  React.useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
+
   const [userData, setUserData] = useState({
     username: '',
     email: '',
@@ -36,8 +44,10 @@ const Register = () => {
       if (!response.ok) {
         throw new Error(data.msg || 'Registration failed');
       }
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Use the login function from AuthContext
+      login(data.user, data.token);
+
       navigate("/");
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');

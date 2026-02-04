@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, LogIn, ChevronLeft } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login, user } = useAuth();
+
+  // If already logged in, go to home
+  React.useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
+
   const [credentials, setCredentials] = useState({
     emailOrUsername: '',
     password: '',
@@ -34,8 +42,10 @@ const Login = () => {
       if (!response.ok) {
         throw new Error(data.msg || 'Login failed');
       }
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Use the login function from AuthContext
+      login(data.user, data.token);
+
       navigate("/");
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
